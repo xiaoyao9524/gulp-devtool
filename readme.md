@@ -2,8 +2,12 @@
 ============================================
 
 ## 1、安装依赖
-npm install gulp browser-sync gulp-sass --save-dev 
+npm install  or yarn install
 ## 2、启动服务
-gulp server 
+gulp server
+## 3、打包项目
+gulp build
 
-### 这样服务就启动了，我们任意更改html、scss、和js文件浏览器都将实时刷新。
+============================================
+
+###### 可自动添加css前缀
