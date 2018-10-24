@@ -1,0 +1,23 @@
+{
+  "name": "gulp-dev-tool",
+  "version": "1.0.0",
+  "description": "gulp-dev-tool",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "browser-sync": "^2.26.3",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-connect": "^5.6.1",
+    "gulp-sass": "^4.0.2",
+    "gulp-useref": "^3.1.5",
+    "run-sequence": "^2.2.1",
+    "stream-combiner2": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
