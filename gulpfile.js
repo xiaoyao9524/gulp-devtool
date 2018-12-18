@@ -17,7 +17,7 @@ gulp.task('server', async () => {
   log('正在启动服务...');
   await buildScss('./src/scss/*.scss', './src/css/');
   await prefixer('./src/css/*.css', './src/css/');
-  await compilerJS('./src/js/es6/*.js', './src/js/es5/');
+  await compilerJS('./src/js-es6/*.js', './src/js/');
   browserSync.init({
     server: './src',
     port: 8080, // 设置端口
@@ -28,18 +28,18 @@ gulp.task('server', async () => {
     await buildScss('./src/scss/*.scss', './src/css/');
     await prefixer('./src/css/*.css', './src/css/');
   });
-  gulp.watch('src/js/es6/*.js', () => {
-    compilerJS('./src/js/es6/*.js', './src/js/es5/');
+  gulp.watch('src/js-es6/*.js', () => {
+    compilerJS('./src/js-es6/*.js', './src/js/');
   });
 
   gulp.watch([
     'src/*.html',
     'src/page/*.html',
     'src/css/*.css',
-    'src/js/es5/*.js',
+    'src/js/*.js',
     'src/img/*'
   ])
-      .on('change', reload);
+    .on('change', reload);
   log('启动服务成功！');
 });
 
@@ -49,7 +49,7 @@ gulp.task('build', async () => {
   await clearDist();
   await buildScss('./src/scss/*.scss', './dist/css/', 'compressed');
   await prefixer('./dist/css/*.css', './dist/css/');
-  await compilerJS('./src/js/es6/*.js', './dist/js/es5/');
+  await compilerJS('./src/js-es6/*.js', './dist/js/');
   await buildFile();
   log('构建完成');
 });
@@ -106,7 +106,7 @@ function compilerJS (readFilePath, writeFilePath) {
   })
 }
 function buildFile () {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     log('开始写入文件：');
     // 写入index.html
     gulp.src('./src/*.html')
@@ -120,12 +120,9 @@ function buildFile () {
     gulp.src('./src/img/*')
         .pipe(gulp.dest('./dist/img/'));
     // 写入js
-    gulp.src('./src/js/es5/*.js')
-        .pipe(gulp.dest('./dist/js/es5/'))
-        .on('end', () => {
-          log('写入文件完成！');
-          resolve();
-        })
+    await compilerJS('./src/js-es6/*.js', './dist/js/');
+    log('写入文件完成！');
+    resolve();
   });
 }
 
