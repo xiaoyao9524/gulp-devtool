@@ -1,7 +1,8 @@
 .box {
+  margin-top: 200px;
   width: 100px;
   height: 100px;
-  background: pink;
+  background: greenyellow;
   -webkit-transform: rotateZ(70deg);
      -moz-transform: rotateZ(70deg);
       -ms-transform: rotate(70deg);
