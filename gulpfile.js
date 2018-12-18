@@ -15,16 +15,19 @@ const log = log => {
 // 开发部分
 gulp.task('server', async () => {
   log('正在启动服务...');
-  await buildScss();
+  await buildScss('./src/scss/*.scss', './src/css/');
+  await prefixer('./src/css/*.css', './src/css/');
   await compilerJS('./src/js/es6/*.js', './src/js/es5/');
-
   browserSync.init({
     server: './src',
     port: 8080, // 设置端口
     ghostMode: false, // 开启的话有一个设备 滚动(scroll)\点击(clicks)\forms 了页面其他设备也会有相同的行为
     notify: false // 不会在浏览器里显示任何提醒(开启的话每次刷新会有提示，在移动端下遮挡很严重)
   });
-  gulp.watch('src/scss/*.scss', buildScss);
+  gulp.watch('src/scss/*.scss', async () => {
+    await buildScss('./src/scss/*.scss', './src/css/');
+    await prefixer('./src/css/*.css', './src/css/');
+  });
   gulp.watch('src/js/es6/*.js', () => {
     compilerJS('./src/js/es6/*.js', './src/js/es5/');
   });
@@ -43,9 +46,9 @@ gulp.task('server', async () => {
 gulp.task('build', async () => {
   log('开始构建：');
   await clearDist();
-  await buildScss();
-  await prefixer();
-  await compilerJS('./src/js/es6/*.js', './src/js/es5/');
+  await buildScss('./src/scss/*.scss', './dist/css/', 'compressed');
+  await prefixer('./dist/css/*.css', './dist/css/');
+  await compilerJS('./src/js/es6/*.js', './dist/js/es5/');
   await buildFile();
   log('构建完成');
 });
@@ -60,47 +63,45 @@ function clearDist () {
       });
   })
 }
-function buildScss() {
-  log('开始编译scss');
+function buildScss(readFilePath, writeFilePath, outputStyle = 'expanded') {
+  log('开始编译scss, outputStyle: ' + outputStyle);
   return new Promise((resolve) => {
-    gulp.src('./src/scss/*.scss')
-        .pipe(sass())
-        .pipe(
-            autoprefixer(
-                {
-                  browsers: ['last 2 Explorer versions', 'Firefox >= 20', 'last 100 versions'],
-                  cascade: true
-                }
-            )
-        )
-        .pipe(gulp.dest('./src/css/'));
-    log('编译scss成功！');
-    resolve();
+    gulp.src(readFilePath)
+        .pipe(sass({
+          outputStyle
+        }))
+        .pipe(gulp.dest(writeFilePath))
+        .on('end', () => {
+          log('编译scss成功！');
+          resolve();
+        });
   })
 }
-function prefixer () {
+function prefixer (readFilePath, writeFilePath) {
   return new Promise((resolve) => {
     log('开始添加css前缀:');
-    gulp.src('./src/css/*.css')
+    gulp.src(readFilePath)
         .pipe(autoprefixer({
           browsers: ['last 2 Explorer versions', 'Firefox >= 20', 'last 100 versions'],
           cascade: false
         }))
-        .pipe(gulp.dest('./src/css/'))
+        .pipe(gulp.dest(writeFilePath))
         .on('end', () => {
           log('添加css前缀完成');
           resolve();
         })
   })
 }
-function compilerJS (readFilePath = './src/js/es6/*.js', outFilePath = './src/js/es5/') {
+function compilerJS (readFilePath, writeFilePath) {
   return new Promise(resolve => {
     log('开始转换js');
     gulp.src(readFilePath)
         .pipe(babel())
-        .pipe(gulp.dest(outFilePath));
-    log('转换js成功');
-    resolve();
+        .pipe(gulp.dest(writeFilePath))
+        .on('end', () => {
+          log('转换js成功');
+          resolve();
+        })
   })
 }
 function buildFile () {
@@ -117,9 +118,6 @@ function buildFile () {
     // 写入img
     gulp.src('./src/img/*')
         .pipe(gulp.dest('./dist/img/'));
-    // 写入css
-    gulp.src('./src/css/*.css')
-        .pipe(gulp.dest('./dist/css/'));
     // 写入js
     gulp.src('./src/js/es5/*.js')
         .pipe(gulp.dest('./dist/js/es5/'))
@@ -133,12 +131,7 @@ function buildFile () {
 /*
   outputStyle:
     nested：嵌套缩进的css代码，它是默认值。
-
     expanded：没有缩进的、扩展的css代码。
-
     compact：简洁格式的css代码。
-
     compressed：压缩后的css代码。
-
-    如需改变压缩格式，可以直接命令行运行： "gulp sass" 来直接编译
 */
