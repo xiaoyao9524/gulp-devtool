@@ -40,6 +40,7 @@ gulp.task('server', async () => {
     'src/img/*'
   ])
       .on('change', reload);
+  log('启动服务成功！');
 });
 
 // 构建部分
