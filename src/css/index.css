@@ -1,23 +1,9 @@
-.test {
+.box {
   width: 100px;
   height: 100px;
-  color: orange;
-  background: green;
-}
-
-.test .aaa {
-  color: pink;
-  font-size: 30px;
-  -webkit-transform: rotate(660deg) translateX(70px);
-  -moz-transform: rotate(660deg) translateX(70px);
-  -ms-transform: rotate(660deg) translateX(70px);
-  -o-transform: rotate(660deg) translateX(70px);
-  transform: rotate(660deg) translateX(70px);
-}
-
-.t {
-  width: 100px;
-  height: 500px;
-  margin-top: 500px;
-  background: palegoldenrod;
-}
+  background: pink;
+  -webkit-transform: rotateZ(70deg);
+     -moz-transform: rotateZ(70deg);
+      -ms-transform: rotate(70deg);
+       -o-transform: rotateZ(70deg);
+          transform: rotateZ(70deg); }

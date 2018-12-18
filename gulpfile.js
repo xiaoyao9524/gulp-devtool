@@ -7,7 +7,7 @@ const del = require('del');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const combiner = require('stream-combiner2');
-const useref = require('gulp-useref')
+const useref = require('gulp-useref');
 const log = log => {
   console.log(`👉👉👉${log}👈👈👈`);
 };
@@ -29,7 +29,7 @@ gulp.task('server', ['devScss'], () => {
     'src/img/*'
   ])
     .on('change', reload)
-})
+});
 
 gulp.task('devScss', function () {
   return combiner([
